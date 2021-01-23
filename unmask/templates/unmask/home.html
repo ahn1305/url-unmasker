@@ -1,0 +1,139 @@
+{% extends 'unmask/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+<body onload="myFunction()" style="margin:0;">
+
+<script type="text/javascript">
+	 document.getElementById("home_btn").style.display = "none"; 
+</script>
+
+
+<div class="center">
+
+    <form action="send" method="post" id = "form">
+    {% csrf_token %}
+    <br>
+    {{ form.url|as_crispy_field }}
+
+    <br>
+  
+    <button type="submit" class="btn btn-info" value = "Submit">Unmask</button>
+
+</form>
+<br>
+
+<h2 id = "title">What is url masking?</h2>
+
+<p id = whatisum>
+Domain masking or URL masking is the act of hiding the actual domain name of a website from the URL field of a user's web browser in favor of another name. There are many ways to do this, including the following examples.
+<br><br>
+1. HTML inline frame or frameset so a frame embedded in the main website actually points to some other site.
+<br><br>
+2. URL rewriting (e.g., mod_rewrite) or aliases to have the web server serve the same page for two different domain names.
+<br><br>
+3. Virtual hosting whereby the HTTP server serves up several different websites based only upon the content of the "Host" HTTP Request Header.
+<br><br>
+Once the URL is masked it displays the URL mask rather than the original URL/domain name.
+Masking does not affect the content of the actual website; it only covers up the original URL/domain name.
+<br><br>
+Domain masking prevents users from being able to see the actual domain website, whether it be due to length or privacy/security issues.
+<br><br>
+This webapp will unmask the given url and show the original url behind it.
+</p>
+
+
+
+
+
+{% if request.get_full_path == '/send' %}
+
+<script type="text/javascript">
+	 document.getElementById("form").style.display = "none"; 
+	 document.getElementById("whatisum").style.display = "none";
+   document.getElementById("title").style.display = "none";
+</script>
+
+
+<div id="loader"></div>
+<div style="display:none;" id="myDiv" class="animate-bottom">
+
+{% if ori_link %}
+
+
+<h2>Details about the link you have entered</h2>
+<br>
+<h4>The url you entered is: {{ data|urlize }}</h4>
+<br>
+<h4>The original url is: {{ ori_link|urlize }}</h4>
+<br>
+{% if title %}
+<h4>Title: {{ title }}</h4>
+{% else %}
+<h4>Title: None</h4>
+{% endif %}
+<br>
+{% if meta %}
+<h4>Meta-Description: {{ meta }}</h4>
+{% else %}
+<h4>Meta-Description: None</h4>
+{% endif %}
+
+<br>
+<h4>Search google: </h4>
+<input id="input" type="text" value = "{{ domain }}" readonly>
+<button id="copy">Copy</button>
+
+<script>
+	function copy() {
+  var copyText = document.querySelector("#input");
+  copyText.select();
+  document.execCommand("copy");
+  alert("Text copied is: " + copyText.value);
+}
+
+document.querySelector("#copy").addEventListener("click", copy);
+</script>
+
+<br><br>
+<a href= "{% url 'home_page' %}"><button type="button" class="btn btn-outline-primary" id = "home_btn">Back to homepage</button></a>
+
+
+
+
+{% endif %}
+{% endif %}
+
+
+<script>
+var myVar;
+
+function myFunction() {
+  myVar = setTimeout(showPage, 3000);
+}
+
+function showPage() {
+  document.getElementById("loader").style.display = "none";
+  document.getElementById("myDiv").style.display = "block";
+}
+</script>
+
+<br>
+
+{% if request.get_full_path == '/' %}
+
+<script type="text/javascript">
+	 document.getElementById("home_btn").style.display = "none"; 
+</script>
+
+{% endif %}
+
+</div>
+</div>
+
+<br><br>
+
+
+{% endblock content %}
+
